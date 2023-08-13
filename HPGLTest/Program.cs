@@ -22,7 +22,7 @@ namespace HPGLTest
             resManager = new ResourceManager();
 
             // Connect to the plotter and configure connection
-            gpibSession = (GpibSession)resManager.Open(@"GPIB0::6::INSTR");
+            gpibSession = (GpibSession)resManager.Open(@"GPIB0::5::INSTR");
             gpibSession.TimeoutMilliseconds = 20000; // Set the timeout to be 20s
             gpibSession.TerminationCharacterEnabled = true;
 
@@ -50,8 +50,11 @@ namespace HPGLTest
                 Console.WriteLine(cmd);
             }
 
+            // HP 7550A - Automatically get new paper
+            gpibSession.FormattedIO.WriteLine("PG 1;");
+
             // Flip the paper over
-            Output.Prompt("Flip the paper");
+            // Output.Prompt("Flip the paper");
 
             // Get the second model
             hpgl = System.IO.File.ReadAllText(@"columbia-Model-SHPGL.PLT");
@@ -67,9 +70,11 @@ namespace HPGLTest
                 Console.WriteLine(cmd);
             }
 
+            // HP 7550A - Unload the paper
+            gpibSession.FormattedIO.WriteLine("NR");
+            
             // Plotting complete
             Output.Prompt("Plotting complete");
-
         }
     }
 }
